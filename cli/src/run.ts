@@ -2,33 +2,43 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import { readFileSync, writeFileSync } from 'node:fs';
-import { basename } from 'node:path';
-import { parseArgs } from 'node:util';
 import { SPEC_VERSION } from '@ohmyopensource/ohmyupdater-core';
-import {
-  DEFAULT_KDF_LIMITS,
-  generateKeyPair,
-  KeyError,
-  readSecretKey,
-  signMessage,
-  type KdfLimits,
-} from './keys.js';
+import { create } from './create.js';
+import { ENV_KEY_PASSWORD, ENV_SECRET_KEY, UsageError, type Io } from './io.js';
+import { KeyError } from './keys.js';
+import { keygen, sign } from './signing.js';
+import { verify } from './verify-command.js';
 
-export const ENV_SECRET_KEY = 'OHMYUPDATER_SECRET_KEY';
-export const ENV_KEY_PASSWORD = 'OHMYUPDATER_KEY_PASSWORD';
+export { ENV_KEY_PASSWORD, ENV_SECRET_KEY, type Io } from './io.js';
 
 const HELP = `Usage: ohmyupdater <command> [options]
 
 Commands:
   keygen --out <name> [--unencrypted] [--force]
-            Generate a key pair: <name>.pub (public) and <name>.key (secret).
-            The secret key is encrypted with ${ENV_KEY_PASSWORD}.
+      Generate a key pair: <name>.pub (public) and <name>.key (secret).
+      The secret key is encrypted with ${ENV_KEY_PASSWORD}.
+
+  create --component <id> --version <version> --out <file> [options]
+      Create a manifest. Options:
+        --install <platform>=<file>   artifact to install (repeatable)
+        --base-url <url>              where --install artifacts are downloaded from
+        --store <platform>=<url>      app store page (repeatable)
+        --reload                      web application (reload)
+        --notify [--notify-url <url>] backend service (notify an operator)
+        --minimum-version <version>   older versions must update
+        --requires "<component> <range>"  requirement (repeatable)
+        --notes-file <file>           release notes in Markdown
+        --expires-in <days>           validity, 1 to 365 days (default 180)
+
   sign <file> [--out <path>] [--comment <text>]
-            Sign a file with the secret key in ${ENV_SECRET_KEY}
-            (password in ${ENV_KEY_PASSWORD}). Writes <file>.sig by default.
-  create    Create a manifest from build artifacts (coming soon)
-  verify    Verify a signed manifest (coming soon)
+      Sign a file with the secret key in ${ENV_SECRET_KEY}
+      (password in ${ENV_KEY_PASSWORD}). Writes <file>.sig by default.
+
+  verify <file> --public-key <file> --component <id> [options]
+      Verify a signed manifest like a client would. Options:
+        --signature <file>            signature file (default <file>.sig)
+        --public-key <file>           repeatable, for key rotation
+        --check-file <platform>=<file>  check a local artifact against the manifest
 
 Options:
   -h, --help       Show this help
@@ -37,92 +47,11 @@ Options:
 Secrets are only read from environment variables, never from arguments.
 `;
 
-/** Everything the CLI needs from the outside world, injectable for tests. */
-export interface Io {
-  readonly out: (text: string) => void;
-  readonly err: (text: string) => void;
-  readonly env: Readonly<Record<string, string | undefined>>;
-  /** scrypt limits for new secret keys. Only lowered in tests. */
-  readonly kdfLimits?: KdfLimits;
-  readonly now?: () => Date;
-}
-
 const defaultIo: Io = {
   out: (text) => console.log(text),
   err: (text) => console.error(text),
   env: process.env,
 };
-
-class UsageError extends Error {}
-
-function keygen(args: string[], io: Io): number {
-  const { values } = parseArgs({
-    args,
-    strict: true,
-    options: {
-      out: { type: 'string' },
-      unencrypted: { type: 'boolean' },
-      force: { type: 'boolean' },
-    },
-  });
-  if (values.out === undefined) throw new UsageError('keygen requires --out <name>.');
-
-  const password = io.env[ENV_KEY_PASSWORD];
-  if (!values.unencrypted && (password === undefined || password.length === 0)) {
-    throw new UsageError(
-      `Set ${ENV_KEY_PASSWORD} to encrypt the secret key, or pass --unencrypted for a throwaway key.`,
-    );
-  }
-
-  const pair = generateKeyPair(
-    values.unencrypted ? undefined : password,
-    io.kdfLimits ?? DEFAULT_KDF_LIMITS,
-  );
-  // 'wx' refuses to overwrite an existing key unless --force is given.
-  const flag = values.force ? 'w' : 'wx';
-  writeFileSync(`${values.out}.pub`, pair.publicKeyFile, { flag });
-  writeFileSync(`${values.out}.key`, pair.secretKeyFile, { flag, mode: 0o600 });
-
-  io.out(
-    [
-      `Key pair generated (key ID ${pair.keyId}).`,
-      `  Public key: ${values.out}.pub (embed it in your application)`,
-      `  Secret key: ${values.out}.key (store its content as the ${ENV_SECRET_KEY} secret,`,
-      '              then delete the file; never commit it)',
-    ].join('\n'),
-  );
-  return 0;
-}
-
-function signCommand(args: string[], io: Io): number {
-  const { values, positionals } = parseArgs({
-    args,
-    strict: true,
-    allowPositionals: true,
-    options: {
-      out: { type: 'string' },
-      comment: { type: 'string' },
-    },
-  });
-  const [file, ...extra] = positionals;
-  if (file === undefined || extra.length > 0) {
-    throw new UsageError('sign requires exactly one file.');
-  }
-
-  const secretKeyFile = io.env[ENV_SECRET_KEY];
-  if (secretKeyFile === undefined || secretKeyFile.length === 0) {
-    throw new UsageError(`Set ${ENV_SECRET_KEY} to the content of the secret key file.`);
-  }
-
-  const key = readSecretKey(secretKeyFile, io.env[ENV_KEY_PASSWORD] || undefined);
-  const timestamp = Math.floor((io.now?.() ?? new Date()).getTime() / 1000);
-  const comment = values.comment ?? `timestamp:${timestamp}\tfile:${basename(file)}\thashed`;
-  const output = values.out ?? `${file}.sig`;
-
-  writeFileSync(output, signMessage(readFileSync(file), key, comment));
-  io.out(`Signed ${file} -> ${output}`);
-  return 0;
-}
 
 /** Runs the CLI with the given arguments and returns the process exit code. */
 export async function run(args: string[], io: Io = defaultIo): Promise<number> {
@@ -131,8 +60,12 @@ export async function run(args: string[], io: Io = defaultIo): Promise<number> {
     switch (command) {
       case 'keygen':
         return keygen(rest, io);
+      case 'create':
+        return await create(rest, io);
       case 'sign':
-        return signCommand(rest, io);
+        return sign(rest, io);
+      case 'verify':
+        return await verify(rest, io);
       case '-v':
       case '--version':
         io.out(`manifest specification v${SPEC_VERSION}`);
@@ -151,7 +84,11 @@ export async function run(args: string[], io: Io = defaultIo): Promise<number> {
       return 1;
     }
     if (error instanceof Error && 'code' in error) {
-      // parseArgs and file system errors carry a code and a readable message.
+      // Core verification errors, parseArgs and file system errors all carry a code.
+      io.err(`Error (${String(error.code)}): ${error.message}`);
+      return 1;
+    }
+    if (error instanceof Error) {
       io.err(`Error: ${error.message}`);
       return 1;
     }
