@@ -1,0 +1,50 @@
+# Signing keys and secrets
+*.key
+*.pem
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.minisign
+*.secret
+.env
+.env.*
+!.env.example
+# Test keys are allowed only inside fixtures and must be clearly named
+!spec/fixtures/**/test-*.key
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+*.swp
+
+# Node / TypeScript
+node_modules/
+dist/
+coverage/
+.nx/
+*.tsbuildinfo
+npm-debug.log*
+pnpm-debug.log*
+
+# Dart / Flutter
+.dart_tool/
+.packages
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+
+#Java / Gradle / Maven
+.gradle/
+target/
+out/
+*.class
+!gradle/wrapper/gradle-wrapper.jar
+
+# Docs (VitePress)
+docs/.vitepress/cache/
+docs/.vitepress/dist/
