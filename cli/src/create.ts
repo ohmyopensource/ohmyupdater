@@ -55,8 +55,7 @@ export async function create(args: string[], io: Io): Promise<number> {
       'base-url': { type: 'string' },
       store: { type: 'string', multiple: true },
       reload: { type: 'boolean' },
-      notify: { type: 'boolean' },
-      'notify-url': { type: 'string' },
+      notify: { type: 'string', multiple: true },
       out: { type: 'string' },
     },
   });
@@ -97,13 +96,15 @@ export async function create(args: string[], io: Io): Promise<number> {
     add(platform, { action: 'store', url });
   }
   if (values.reload) add('web', { action: 'reload' });
-  if (values.notify || values['notify-url'] !== undefined) {
-    add(
-      'server',
-      values['notify-url'] === undefined
-        ? { action: 'notify' }
-        : { action: 'notify', url: values['notify-url'] },
-    );
+  for (const value of values.notify ?? []) {
+    // --notify <platform> or --notify <platform>=<url>
+    const index = value.indexOf('=');
+    if (index === -1) {
+      add(platformId(value, '--notify'), { action: 'notify' });
+    } else {
+      const [platform, url] = splitPair(value, '--notify');
+      add(platform, { action: 'notify', url });
+    }
   }
 
   const requires = (values.requires ?? []).map((value) => {

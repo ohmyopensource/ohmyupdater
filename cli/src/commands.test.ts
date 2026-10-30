@@ -100,6 +100,33 @@ describe('create', () => {
     });
   });
 
+  it('notifies on any platform, with or without a link', async () => {
+    const releasePage = 'https://github.com/ohmyopensource/example-app/releases/tag/v1.4.0';
+    const t = io();
+    const code = await run(
+      [
+        'create',
+        '--component',
+        'example-app',
+        '--version',
+        '1.4.0',
+        '--notify',
+        `web=${releasePage}`,
+        '--notify',
+        'server',
+        '--out',
+        manifest,
+      ],
+      t.io,
+    );
+    expect(code, t.err.join('\n')).toBe(0);
+    const written = JSON.parse(readFileSync(manifest, 'utf8')) as Record<string, unknown>;
+    expect(written['platforms']).toEqual({
+      web: { action: 'notify', url: releasePage },
+      server: { action: 'notify' },
+    });
+  });
+
   it('never writes a manifest that clients would reject', async () => {
     const t = io();
     const code = await run(
@@ -127,6 +154,8 @@ describe('create', () => {
       [...base, '--install', `windows=${artifact}`, '--base-url', BASE_URL],
       [...base, '--reload', '--store', 'web=https://example.com'],
       [...base, '--reload', '--requires', 'example-api'],
+      [...base, '--notify', 'web=http://example.com/insecure'],
+      [...base, '--notify', 'desktop'],
     ];
     for (const args of cases) {
       expect(await run(args, io().io), args.join(' ')).toBe(1);

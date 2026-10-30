@@ -23,8 +23,8 @@ Commands:
         --install <platform>=<file>   artifact to install (repeatable)
         --base-url <url>              where --install artifacts are downloaded from
         --store <platform>=<url>      app store page (repeatable)
-        --reload                      web application (reload)
-        --notify [--notify-url <url>] backend service (notify an operator)
+        --notify <platform>[=<url>]   notify only, with an optional link (repeatable)
+        --reload                      web application served by you (reload)
         --minimum-version <version>   older versions must update
         --requires "<component> <range>"  requirement (repeatable)
         --notes-file <file>           release notes in Markdown

@@ -1,6 +1,6 @@
 {
   "name": "@ohmyopensource/ohmyupdater-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "OhMyUpdater! CLI: generate keys, create, sign and verify update manifests.",
   "keywords": [
     "update",

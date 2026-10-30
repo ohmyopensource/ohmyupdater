@@ -8,7 +8,7 @@ OHMYUPDATER_KEY_PASSWORD=... npx @ohmyopensource/ohmyupdater-cli keygen --out re
 
 # At every release:
 npx @ohmyopensource/ohmyupdater-cli create --component my-app --version 1.4.0 \
-  --notify --notify-url https://github.com/me/my-app/releases/tag/v1.4.0 \
+  --notify web=https://github.com/me/my-app/releases/tag/v1.4.0 \
   --out latest.json
 npx @ohmyopensource/ohmyupdater-cli sign latest.json
 npx @ohmyopensource/ohmyupdater-cli verify latest.json --public-key release.pub --component my-app
