@@ -42,3 +42,12 @@ export {
   type VerifiedManifest,
   type VerifyManifestInput,
 } from './verify.js';
+
+export {
+  checkForUpdate,
+  highestVersionKey,
+  type CheckErrorCode,
+  type CheckOptions,
+  type CheckResult,
+  type UpdaterStorage,
+} from './client.js';

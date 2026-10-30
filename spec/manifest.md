@@ -130,6 +130,8 @@ A client MUST perform these steps in order, stop at the first failure and report
 
 The signature is verified before the manifest is parsed, so that unauthenticated input never reaches the JSON parser. After all checks succeed, the client MUST store `version` as the new highest accepted version for the component.
 
+Download failures (network errors, timeouts, HTTP errors) are reported as `download-failed`, and an invalid client configuration (for example a non-HTTPS URL or no trusted key) as `invalid-configuration`. Clients MAY accept plain HTTP for `localhost`, `127.0.0.1` and `[::1]` during development only.
+
 Any failure results in the `error` status. A failed check MUST NOT prevent the application from running; it only prevents updating. Shared test vectors are in `fixtures/policy/cases.json`.
 
 ### 5.1 Status

@@ -1,0 +1,15 @@
+{
+  "description": "Signed manifests for testing client adapters (download, storage, status). Valid from 2026-11-01T10:00:00Z to 2027-05-01T10:00:00Z. Generated with minisign 0.12; the private key was discarded.",
+  "component": "example-web",
+  "publicKey": "untrusted comment: minisign public key B3165783445716A4\nRWSkFldEg1cWsw75RAR6f+BIMUf5Kgnpxt+Go+erfTKJ8nlvZQJAFQRC\n",
+  "manifests": {
+    "notify": {
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-web\",\n  \"version\": \"2.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"minimumVersion\": \"1.5.0\",\n  \"notes\": \"Bug fixes.\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"notify\",\n      \"url\": \"https://github.com/example/example-web/releases/tag/v2.0.0\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUSkFldEg1cWsy8mvaglKkiQoocXR8cVT7yeIZpSnKHVV1fsg1g+GITNqt1T2f7N+d9JiPAuPONIp8eBIiPYKvK1iw8QFor4qQ4=\ntrusted comment: OhMyUpdater web test fixture\nr/62ifX8OpUNx/VX9ulTV45EbcQ+G4GTbkMoVNP+a7mIGQJLhI+KJlUFBpms+UP1MFEQLOjz2t4HT+F/BpwAAA==\n"
+    },
+    "reload": {
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-web\",\n  \"version\": \"2.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUSkFldEg1cWsynLHxXffK1Rql0ei7ma/8VHhSW8t7f9aYU93rNdhEXfuVuH02JTuSD5exUOl3CNbjmJ/nCHVsgQXlW6aQIjFwQ=\ntrusted comment: OhMyUpdater web test fixture\n9aUjLfoK/amZfKEw8QOEchwn97Z1lhxdgpwm835Mmn/jm3ZXyvhXHFF6tgkOI/O7MKZ8ee+sAyv7Wp9HW/iqAw==\n"
+    }
+  }
+}

@@ -60,6 +60,12 @@ importers:
         specifier: ^2.4.0
         version: 2.4.0
 
+  packages/js/web:
+    dependencies:
+      '@ohmyopensource/ohmyupdater-core':
+        specifier: workspace:*
+        version: link:../core
+
 packages:
 
   '@cacheable/memory@2.2.0':
