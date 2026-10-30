@@ -43,3 +43,9 @@ jobs:
 
       - name: Validate specification fixtures
         run: pnpm spec:validate
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test

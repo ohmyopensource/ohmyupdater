@@ -1,0 +1,28 @@
+{
+  "name": "@ohmyopensource/ohmyupdater-core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "OhMyUpdater! core: manifest validation, signature verification and update status.",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ohmyopensource/ohmyupdater.git",
+    "directory": "packages/js/core"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  }
+}

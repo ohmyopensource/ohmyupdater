@@ -1,0 +1,27 @@
+{
+  "name": "@ohmyopensource/ohmyupdater-cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "OhMyUpdater! CLI: generate keys, create and sign update manifests.",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ohmyopensource/ohmyupdater.git",
+    "directory": "cli"
+  },
+  "type": "module",
+  "bin": {
+    "ohmyupdater": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ohmyopensource/ohmyupdater-core": "workspace:*"
+  }
+}
