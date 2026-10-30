@@ -4,3 +4,13 @@
 
 /** Version of the manifest specification implemented by this package. */
 export const SPEC_VERSION = 1;
+
+export {
+  MAX_SIGNATURE_LENGTH,
+  MinisignError,
+  parsePublicKey,
+  verifySignature,
+  type MinisignErrorCode,
+  type PublicKey,
+  type VerifiedSignature,
+} from './minisign.js';

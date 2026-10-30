@@ -1,0 +1,138 @@
+{
+  "description": "Cross-implementation test vectors for minisign signature verification. Every implementation MUST produce the expected result for every case. Generated with minisign 0.12; the private keys were discarded.",
+  "cases": [
+    {
+      "name": "valid-prehashed",
+      "description": "Signature produced by minisign 0.12 with the default (prehashed) algorithm.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRUS9lXehcQEpqW6Vs9V3zWo81zK4QoqIum3AjFuz+BUfhVii56RWO8UV//LrUtfLldDHPQiz0DtQr/9U2THMy/dURTKOMwFPzgw=\ntrusted comment: OhMyUpdater test fixture\npq1jNGv7dfQOlVEy2lykJljHO9tV1XPp2TWrvipYHxnxr1OHy9YFOqunOMoF+OQn1Tsz0vKO8mOvnHqVFZkvCA==\n",
+      "expected": {
+        "valid": true,
+        "keyId": "A9290171A17795BD",
+        "trustedComment": "OhMyUpdater test fixture"
+      }
+    },
+    {
+      "name": "valid-bare-public-key",
+      "description": "Public key given as the bare base64 line, as in Tauri configuration files.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": ["RWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB"],
+      "signature": "untrusted comment: signature from minisign secret key\nRUS9lXehcQEpqW6Vs9V3zWo81zK4QoqIum3AjFuz+BUfhVii56RWO8UV//LrUtfLldDHPQiz0DtQr/9U2THMy/dURTKOMwFPzgw=\ntrusted comment: OhMyUpdater test fixture\npq1jNGv7dfQOlVEy2lykJljHO9tV1XPp2TWrvipYHxnxr1OHy9YFOqunOMoF+OQn1Tsz0vKO8mOvnHqVFZkvCA==\n",
+      "expected": {
+        "valid": true,
+        "keyId": "A9290171A17795BD",
+        "trustedComment": "OhMyUpdater test fixture"
+      }
+    },
+    {
+      "name": "valid-crlf-line-endings",
+      "description": "Signature file with Windows line endings.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\r\nRUS9lXehcQEpqW6Vs9V3zWo81zK4QoqIum3AjFuz+BUfhVii56RWO8UV//LrUtfLldDHPQiz0DtQr/9U2THMy/dURTKOMwFPzgw=\r\ntrusted comment: OhMyUpdater test fixture\r\npq1jNGv7dfQOlVEy2lykJljHO9tV1XPp2TWrvipYHxnxr1OHy9YFOqunOMoF+OQn1Tsz0vKO8mOvnHqVFZkvCA==\r\n",
+      "expected": {
+        "valid": true,
+        "keyId": "A9290171A17795BD",
+        "trustedComment": "OhMyUpdater test fixture"
+      }
+    },
+    {
+      "name": "valid-multiple-trusted-keys",
+      "description": "The matching key is selected by key ID among several trusted keys (key rotation).",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key FCDCB0140EE649C8\nRWTISeYOFLDc/COmIdWP3EZakaOYUDAeVYhw1ISfK7s/7dHNG94pg/Su\n",
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRUS9lXehcQEpqW6Vs9V3zWo81zK4QoqIum3AjFuz+BUfhVii56RWO8UV//LrUtfLldDHPQiz0DtQr/9U2THMy/dURTKOMwFPzgw=\ntrusted comment: OhMyUpdater test fixture\npq1jNGv7dfQOlVEy2lykJljHO9tV1XPp2TWrvipYHxnxr1OHy9YFOqunOMoF+OQn1Tsz0vKO8mOvnHqVFZkvCA==\n",
+      "expected": {
+        "valid": true,
+        "keyId": "A9290171A17795BD",
+        "trustedComment": "OhMyUpdater test fixture"
+      }
+    },
+    {
+      "name": "legacy-algorithm",
+      "description": "Signature produced with minisign -l (legacy, non-prehashed). MUST be rejected.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRWS9lXehcQEpqTXQPLzM9K9NAc57ww/gihcqcizPwnzXbInoPd6QIRnnGiUnZN8B1Ktd6YBdz3bVKWpmf5el6zdmnak9s+DZhQ4=\ntrusted comment: OhMyUpdater test fixture\nO5avM3nQ63Hjh1YGHFLBOoegmPRiP+Q2xEKDpdGYVhc1w8svgr4ujG6IKt0YPFrAS9Y52GceB6L56Jsoi0llCg==\n",
+      "expected": {
+        "valid": false,
+        "error": "legacy-algorithm"
+      }
+    },
+    {
+      "name": "untrusted-key",
+      "description": "Valid signature from a key that is not trusted.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRUTISeYOFLDc/K09ze/7Q1DI5Q0dEp0DDaiXTJ/W4k3X1mEWPKGGVNg8pB+0n2ZMA3JxGelXB/OrfIvkVNLB6SGu8pHNH5+Jsgs=\ntrusted comment: OhMyUpdater test fixture\nbzVfRaMazOqjspH0NSv5lzZ6Sk0ZvVXXtVBsxmNX+rHyyycWaSVSqcUpSSshY4obUkaRg30vRD6XDvJWpiPMBg==\n",
+      "expected": {
+        "valid": false,
+        "error": "untrusted-key"
+      }
+    },
+    {
+      "name": "tampered-message",
+      "description": "The message was modified after signing.",
+      "message": "{\"schemaVersion\":2}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRUS9lXehcQEpqW6Vs9V3zWo81zK4QoqIum3AjFuz+BUfhVii56RWO8UV//LrUtfLldDHPQiz0DtQr/9U2THMy/dURTKOMwFPzgw=\ntrusted comment: OhMyUpdater test fixture\npq1jNGv7dfQOlVEy2lykJljHO9tV1XPp2TWrvipYHxnxr1OHy9YFOqunOMoF+OQn1Tsz0vKO8mOvnHqVFZkvCA==\n",
+      "expected": {
+        "valid": false,
+        "error": "invalid-signature"
+      }
+    },
+    {
+      "name": "forged-key-id",
+      "description": "Signature from another key, relabelled with the trusted key ID.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRUS9lXehcQEpqa09ze/7Q1DI5Q0dEp0DDaiXTJ/W4k3X1mEWPKGGVNg8pB+0n2ZMA3JxGelXB/OrfIvkVNLB6SGu8pHNH5+Jsgs=\ntrusted comment: OhMyUpdater test fixture\nbzVfRaMazOqjspH0NSv5lzZ6Sk0ZvVXXtVBsxmNX+rHyyycWaSVSqcUpSSshY4obUkaRg30vRD6XDvJWpiPMBg==\n",
+      "expected": {
+        "valid": false,
+        "error": "invalid-signature"
+      }
+    },
+    {
+      "name": "tampered-trusted-comment",
+      "description": "The trusted comment was modified after signing.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "untrusted comment: signature from minisign secret key\nRUS9lXehcQEpqW6Vs9V3zWo81zK4QoqIum3AjFuz+BUfhVii56RWO8UV//LrUtfLldDHPQiz0DtQr/9U2THMy/dURTKOMwFPzgw=\ntrusted comment: OhMyUpdater test fixture (edited)\npq1jNGv7dfQOlVEy2lykJljHO9tV1XPp2TWrvipYHxnxr1OHy9YFOqunOMoF+OQn1Tsz0vKO8mOvnHqVFZkvCA==\n",
+      "expected": {
+        "valid": false,
+        "error": "invalid-global-signature"
+      }
+    },
+    {
+      "name": "malformed-signature",
+      "description": "Not a minisign signature file.",
+      "message": "{\"schemaVersion\":1}\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key A9290171A17795BD\nRWS9lXehcQEpqeUddc4npjhBPj1rHGV0GCyuFRCUPzlsb8/82Jhc//PB\n"
+      ],
+      "signature": "this is not a signature\n",
+      "expected": {
+        "valid": false,
+        "error": "malformed-signature"
+      }
+    }
+  ]
+}

@@ -83,9 +83,23 @@ Signatures use the [minisign](https://jedisct1.github.io/minisign/) format (Ed25
 - Verifiers MUST support the prehashed algorithm (`ED`, Ed25519 over a BLAKE2b-512 digest of the file), which is the default in current minisign versions.
 - Verifiers MUST reject the legacy non-prehashed algorithm (`Ed`).
 - The client is configured with a list of **trusted public keys**. The key ID embedded in the signature MUST match one of them; otherwise verification fails.
-- The trusted comment MUST NOT influence any decision. Verifiers SHOULD verify the global signature that covers it.
+- The trusted comment MUST NOT influence any decision, but verifiers MUST verify the global signature that covers it.
 
-### 4.1 Key rotation
+### 4.1 Verification order
+
+Verifiers MUST perform these checks in order and report the first failure with the given error code, so that every implementation fails in the same way on the same input:
+
+| Order | Check                                                                      | Error code                 |
+| ----- | -------------------------------------------------------------------------- | -------------------------- |
+| 1     | The signature file has four lines and valid base64 of the expected lengths | `malformed-signature`      |
+| 2     | The algorithm is `ED` (`Ed` is reported separately)                        | `legacy-algorithm`         |
+| 3     | The key ID matches a trusted public key                                    | `untrusted-key`            |
+| 4     | The signature over the BLAKE2b-512 digest of the file is valid             | `invalid-signature`        |
+| 5     | The global signature over the signature and the trusted comment is valid   | `invalid-global-signature` |
+
+Line endings MAY be `\n` or `\r\n`. Shared test vectors are in `fixtures/signatures/cases.json`.
+
+### 4.2 Key rotation
 
 To replace a key, a publisher:
 
@@ -151,4 +165,4 @@ Release notes MUST be rendered as Markdown without raw HTML, or as plain text.
 | Endless or oversized downloads           | Size limits on manifest, signature and artifacts |
 | Downgrade to plain HTTP                  | HTTPS-only URLs                                  |
 | Injection through release notes          | Notes treated as untrusted Markdown (section 7)  |
-| Signing key compromise                   | Multiple trusted keys and rotation (section 4.1) |
+| Signing key compromise                   | Multiple trusted keys and rotation (section 4.2) |
