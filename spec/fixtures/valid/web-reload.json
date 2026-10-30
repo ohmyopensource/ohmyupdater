@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "component": "ohmyuniversity-web",
+  "version": "2.3.0",
+  "publishedAt": "2026-11-01T10:00:00Z",
+  "expiresAt": "2027-05-01T10:00:00Z",
+  "minimumVersion": "2.0.0",
+  "notes": "New exam calendar view.",
+  "requires": [{ "component": "ohmyuniversity-api-core", "range": ">=2.1.0 <3.0.0" }],
+  "platforms": {
+    "web": { "action": "reload" }
+  }
+}

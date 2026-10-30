@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "component": "ohmyuniversity-api-core",
+  "version": "2.1.0",
+  "publishedAt": "2026-11-01T10:00:00Z",
+  "expiresAt": "2027-05-01T10:00:00Z",
+  "platforms": {
+    "server": {
+      "action": "notify",
+      "url": "https://github.com/ohmyopensource/ohmyuniversity-api-core/releases/tag/v2.1.0"
+    }
+  }
+}

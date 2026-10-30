@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "component": "ohmyuniversity-mobile",
+  "version": "1.2.0-beta.1",
+  "publishedAt": "2026-11-01T10:00:00Z",
+  "expiresAt": "2027-05-01T10:00:00Z",
+  "platforms": {
+    "android": {
+      "action": "install",
+      "url": "https://github.com/ohmyopensource/ohmyuniversity-mobile/releases/download/v1.2.0-beta.1/app-release.apk",
+      "size": 25165824,
+      "sha256": "3f2a9c1e7b4d6a8f0e5c2b9d1a7f3e6c8b0d4a2f9e1c7b5d3a6f8e0c2b4d9a1f"
+    },
+    "ios": {
+      "action": "store",
+      "url": "https://apps.apple.com/app/id0000000000"
+    }
+  }
+}

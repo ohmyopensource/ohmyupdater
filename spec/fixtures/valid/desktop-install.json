@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "component": "ohmyuniversity-desktop",
+  "version": "1.4.0",
+  "publishedAt": "2026-11-01T10:00:00Z",
+  "expiresAt": "2027-05-01T10:00:00Z",
+  "notes": "## What's new\n\n- Faster startup\n- Bug fixes",
+  "platforms": {
+    "windows-x86_64": {
+      "action": "install",
+      "url": "https://github.com/ohmyopensource/ohmyuniversity-desktop/releases/download/v1.4.0/OhMyUniversity_1.4.0_x64-setup.exe",
+      "size": 8421376,
+      "sha256": "3f2a9c1e7b4d6a8f0e5c2b9d1a7f3e6c8b0d4a2f9e1c7b5d3a6f8e0c2b4d9a1f",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IGV4YW1wbGUgc2lnbmF0dXJl"
+    },
+    "darwin-aarch64": {
+      "action": "install",
+      "url": "https://github.com/ohmyopensource/ohmyuniversity-desktop/releases/download/v1.4.0/OhMyUniversity_aarch64.app.tar.gz",
+      "size": 7340032,
+      "sha256": "3f2a9c1e7b4d6a8f0e5c2b9d1a7f3e6c8b0d4a2f9e1c7b5d3a6f8e0c2b4d9a1f"
+    },
+    "linux-x86_64": {
+      "action": "install",
+      "url": "https://github.com/ohmyopensource/ohmyuniversity-desktop/releases/download/v1.4.0/OhMyUniversity_1.4.0_amd64.AppImage",
+      "size": 9437184,
+      "sha256": "3f2a9c1e7b4d6a8f0e5c2b9d1a7f3e6c8b0d4a2f9e1c7b5d3a6f8e0c2b4d9a1f"
+    }
+  }
+}

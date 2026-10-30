@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ohmyopensource/ohmyupdater/blob/main/spec/schema/manifest.v1.schema.json",
+  "title": "OhMyUpdater! manifest",
+  "description": "Schema for version 1 of the OhMyUpdater! update manifest. See spec/manifest.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "component", "version", "publishedAt", "expiresAt", "platforms"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "component": { "$ref": "#/$defs/componentId" },
+    "version": { "$ref": "#/$defs/semver" },
+    "publishedAt": { "$ref": "#/$defs/timestamp" },
+    "expiresAt": { "$ref": "#/$defs/timestamp" },
+    "minimumVersion": { "$ref": "#/$defs/semver" },
+    "notes": { "type": "string", "maxLength": 16384 },
+    "requires": {
+      "type": "array",
+      "maxItems": 32,
+      "items": { "$ref": "#/$defs/requirement" }
+    },
+    "platforms": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/platformId" },
+      "additionalProperties": { "$ref": "#/$defs/platformEntry" }
+    }
+  },
+  "$defs": {
+    "componentId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "semver": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "httpsUrl": {
+      "type": "string",
+      "maxLength": 2048,
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "range": {
+      "description": "One or more space-separated comparators. Only >=, >, <=, <, = are allowed.",
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^(?:>=|<=|>|<|=)(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?: (?:>=|<=|>|<|=)(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?)*$"
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "range"],
+      "properties": {
+        "component": { "$ref": "#/$defs/componentId" },
+        "range": { "$ref": "#/$defs/range" }
+      }
+    },
+    "platformId": {
+      "enum": [
+        "web",
+        "server",
+        "android",
+        "ios",
+        "windows-x86_64",
+        "windows-aarch64",
+        "darwin-x86_64",
+        "darwin-aarch64",
+        "linux-x86_64",
+        "linux-aarch64"
+      ]
+    },
+    "platformEntry": {
+      "oneOf": [
+        { "$ref": "#/$defs/installEntry" },
+        { "$ref": "#/$defs/reloadEntry" },
+        { "$ref": "#/$defs/storeEntry" },
+        { "$ref": "#/$defs/notifyEntry" }
+      ]
+    },
+    "installEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "url", "size", "sha256"],
+      "properties": {
+        "action": { "const": "install" },
+        "url": { "$ref": "#/$defs/httpsUrl" },
+        "size": { "type": "integer", "minimum": 1, "maximum": 2147483648 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "signature": { "type": "string", "minLength": 1, "maxLength": 1024 }
+      }
+    },
+    "reloadEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action"],
+      "properties": {
+        "action": { "const": "reload" }
+      }
+    },
+    "storeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "url"],
+      "properties": {
+        "action": { "const": "store" },
+        "url": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "notifyEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action"],
+      "properties": {
+        "action": { "const": "notify" },
+        "url": { "$ref": "#/$defs/httpsUrl" }
+      }
+    }
+  }
+}

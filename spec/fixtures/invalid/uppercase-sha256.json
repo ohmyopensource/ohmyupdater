@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "component": "example-app",
+  "version": "1.0.0",
+  "publishedAt": "2026-11-01T10:00:00Z",
+  "expiresAt": "2027-05-01T10:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "action": "install",
+      "url": "https://github.com/ohmyopensource/example-app/releases/download/v1.0.0/example-setup.exe",
+      "size": 1024,
+      "sha256": "3F2A9C1E7B4D6A8F0E5C2B9D1A7F3E6C8B0D4A2F9E1C7B5D3A6F8E0C2B4D9A1F"
+    }
+  }
+}
