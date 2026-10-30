@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an idea or a new platform adapter
+labels: ['enhancement', 'triage']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the solution you have in mind.
+    validations:
+      required: true
+  - type: checkboxes
+    id: spec
+    attributes:
+      label: Specification impact
+      options:
+        - label: This would require a change to the manifest specification.

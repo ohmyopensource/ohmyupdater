@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/ohmyopensource/ohmyupdater/security/advisories/new
+    about: Please report vulnerabilities privately. Never open a public issue for security problems.
+  - name: OhMyOpenSource! Guidelines
+    url: https://github.com/ohmyopensource/ohmyopensource-guidelines
+    about: Contribution rules, commit conventions and organizational standards.

@@ -4,10 +4,10 @@ OhMyUpdater! is software that decides what code gets installed on end users' dev
 
 ## Supported versions
 
-| Version | Supported |
-|---|---|
-| Latest pre-release (`0.x`) | Yes |
-| Older pre-releases | No |
+| Version                    | Supported |
+| -------------------------- | --------- |
+| Latest pre-release (`0.x`) | Yes       |
+| Older pre-releases         | No        |
 
 Until `1.0.0`, only the latest published version receives security fixes.
 

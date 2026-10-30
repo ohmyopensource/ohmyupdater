@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.nx
+pnpm-lock.yaml
+LICENSE
+packages/dart
+packages/java

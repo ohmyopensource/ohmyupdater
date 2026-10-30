@@ -1,0 +1,42 @@
+name: Bug report
+description: Report something that does not work as expected
+labels: ['bug', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Security issues must not be reported here.** Use the private vulnerability reporting link instead.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Specification
+        - CLI
+        - TypeScript core / adapters
+        - Dart core / adapters
+        - Java core / Spring Boot starter
+        - GitHub Action
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: e.g. 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug, what you expected, and steps to reproduce.
+    validations:
+      required: true
+  - type: textarea
+    id: manifest
+    attributes:
+      label: Manifest (optional)
+      description: A minimal manifest that reproduces the issue. Never include private keys.
+      render: json

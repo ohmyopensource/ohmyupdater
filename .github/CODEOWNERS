@@ -1,0 +1,7 @@
+# Default owners for everything in the repository
+* @Luxauram
+
+# Security-critical areas: changes here always require owner review
+/spec/          @Luxauram
+/SECURITY.md    @Luxauram
+/.github/       @Luxauram

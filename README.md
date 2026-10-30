@@ -15,18 +15,18 @@ It is built around three ideas:
 
 - **One contract** - a single, versioned manifest format shared by every platform.
 - **Security first** - both the manifest and every downloadable artifact are signed (Ed25519) and verified before anything is applied.
-- **Platform adapters** - the core only decides *whether* an update is available; small adapters decide *how* to apply it (reload a web app, install a desktop build, open an app store, notify a backend operator).
+- **Platform adapters** - the core only decides _whether_ an update is available; small adapters decide _how_ to apply it (reload a web app, install a desktop build, open an app store, notify a backend operator).
 
 ## Planned packages
 
-| Package | Ecosystem | Status |
-|---|---|---|
-| Specification (`spec/`) | Language-agnostic | Planned |
-| CLI (key generation, manifest signing) | Node.js | Planned |
-| Core + web and Tauri adapters | TypeScript / npm | Planned |
-| Core + Flutter adapters | Dart / pub.dev | Planned |
-| Core + Spring Boot starter | Java / Maven Central | Planned |
-| Reusable GitHub Action | GitHub Actions | Planned |
+| Package                                | Ecosystem            | Status  |
+| -------------------------------------- | -------------------- | ------- |
+| Specification (`spec/`)                | Language-agnostic    | Planned |
+| CLI (key generation, manifest signing) | Node.js              | Planned |
+| Core + web and Tauri adapters          | TypeScript / npm     | Planned |
+| Core + Flutter adapters                | Dart / pub.dev       | Planned |
+| Core + Spring Boot starter             | Java / Maven Central | Planned |
+| Reusable GitHub Action                 | GitHub Actions       | Planned |
 
 ## Documentation
 
