@@ -113,29 +113,38 @@ Private keys MUST only be stored as CI secrets or offline. They MUST NOT be pass
 
 ## 5. Client verification procedure
 
-A client MUST perform these steps in order and stop at the first failure:
+A client MUST perform these steps in order, stop at the first failure and report it with the given error code:
 
-1. Download `latest.json` over HTTPS, aborting if it exceeds 64 KiB.
-2. Download `latest.json.sig` over HTTPS, aborting if it exceeds 4 KiB.
-3. Verify the signature over the exact downloaded bytes with one of the trusted keys.
-4. Parse the manifest and validate it against the schema.
-5. Check that `component` equals the component the client was configured for.
-6. Check that `expiresAt` is later than the current time and later than `publishedAt`.
-7. Check that `version` is not lower than the highest version this client has previously accepted for this component (anti-rollback). After all checks succeed, store `version` as the new highest accepted version.
-8. Check that `minimumVersion`, if present, is not greater than `version`.
-9. Compute the status (section 5.1).
+| Step | Check                                                                                  | Error code                |
+| ---- | -------------------------------------------------------------------------------------- | ------------------------- |
+| 1    | Download `latest.json` over HTTPS, aborting if it exceeds 64 KiB                       | `manifest-too-large`      |
+| 2    | Download `latest.json.sig` over HTTPS, aborting if it exceeds 4 KiB                    | `malformed-signature`     |
+| 3    | Verify the signature over the exact downloaded bytes (section 4.1)                     | see section 4.1           |
+| 4    | Decode the bytes as UTF-8 and parse them as JSON                                       | `invalid-json`            |
+| 4    | Validate the manifest against the schema                                               | `invalid-manifest`        |
+| 5    | `component` equals the component the client was configured for                         | `component-mismatch`      |
+| 6    | `expiresAt` is later than `publishedAt`                                                | `invalid-validity-period` |
+| 6    | `expiresAt` is later than the current time                                             | `expired`                 |
+| 7    | `version` is not lower than the highest version previously accepted for this component | `rollback`                |
+| 8    | `minimumVersion`, if present, is not greater than `version`                            | `invalid-minimum-version` |
 
-A failure in any step MUST result in the `error` status. A failed check MUST NOT prevent the application from running; it only prevents updating.
+The signature is verified before the manifest is parsed, so that unauthenticated input never reaches the JSON parser. After all checks succeed, the client MUST store `version` as the new highest accepted version for the component.
+
+Any failure results in the `error` status. A failed check MUST NOT prevent the application from running; it only prevents updating. Shared test vectors are in `fixtures/policy/cases.json`.
 
 ### 5.1 Status
 
-| Status       | Condition                                                                    |
-| ------------ | ---------------------------------------------------------------------------- |
-| `up-to-date` | The current version is equal to or greater than `version`.                   |
-| `available`  | `version` is greater than the current version.                               |
-| `required`   | As `available`, and the current version is lower than `minimumVersion`.      |
-| `blocked`    | As `available`, but an entry of `requires` is not satisfied.                 |
-| `error`      | Any verification step failed, or there is no entry for the current platform. |
+The status is computed from a verified manifest, the running version, the current platform and, optionally, the known versions of other components. The first matching row applies:
+
+| Status       | Condition                                                                               |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `error`      | The manifest has no entry for the current platform (error code `unsupported-platform`). |
+| `up-to-date` | The running version is equal to or greater than `version`.                              |
+| `blocked`    | An entry of `requires` is not satisfied by the known version of that component.         |
+| `required`   | The running version is lower than `minimumVersion`.                                     |
+| `available`  | Otherwise.                                                                              |
+
+Requirements on components whose version is not known to the client are not evaluated. A client that cannot know the version of a dependency (for example a web application that is not told the backend version) therefore never reports `blocked` for it.
 
 ## 6. Freshness
 

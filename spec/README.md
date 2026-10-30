@@ -10,6 +10,7 @@ This folder contains the **normative contract** shared by every OhMyUpdater! imp
 | `fixtures/invalid/`              | Manifests that MUST fail schema validation                    |
 | `fixtures/signatures/cases.json` | Signature verification test vectors                           |
 | `fixtures/versions/cases.json`   | Version comparison and range test vectors                     |
+| `fixtures/policy/cases.json`     | Verification procedure and update status test vectors         |
 | `scripts/validate-fixtures.mjs`  | Checks every fixture against the schema                       |
 
 Run the fixture check from the repository root:
@@ -18,4 +19,4 @@ Run the fixture check from the repository root:
 pnpm spec:validate
 ```
 
-Every implementation (TypeScript, Dart, Java) MUST produce the same result on every fixture. Policy fixtures (expired manifests, rollback, wrong component) will be added together with the manifest validator.
+Every implementation (TypeScript, Dart, Java) MUST produce the same result on every fixture.

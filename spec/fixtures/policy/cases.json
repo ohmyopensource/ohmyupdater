@@ -1,0 +1,482 @@
+{
+  "description": "Cross-implementation test vectors for the client verification procedure (spec section 5) and the update status (spec section 5.1). Signatures were generated with minisign 0.12; the private key was discarded.",
+  "verification": [
+    {
+      "name": "valid",
+      "description": "A correctly signed, fresh manifest.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": true,
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "same-version-replay",
+      "description": "Seeing the same version again is not a rollback.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "highestAcceptedVersion": "1.0.0",
+      "expected": {
+        "valid": true,
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "signature-checked-before-parsing",
+      "description": "An unsigned non-JSON body fails on the signature, not on parsing.",
+      "manifest": "not json\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "invalid-signature"
+      }
+    },
+    {
+      "name": "invalid-json",
+      "description": "A signed body that is not JSON.",
+      "manifest": "not json\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDt+jgKIoEgdajZxVHMcZJe7SH7hog9rXhtMH5+uw0yK/DXQU6eB3LdxsD1XDfGr2iFzQJRE8EfaKNEi2MCVa9wc=\ntrusted comment: OhMyUpdater policy fixture\nM9lw1biWpTCMibq/q5s52lul4e8H7G1gutmwMXauBXssrWi8HUvY1nmRNzUAeDIEJzdvxj5B+Eg/eCHLUUF8Cg==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "invalid-json"
+      }
+    },
+    {
+      "name": "invalid-manifest",
+      "description": "A signed manifest that violates the schema. A valid signature does not make it acceptable.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\",\n      \"url\": \"https://evil.example/payload.js\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDrSiXiN6GvtfMpwXVNSKanYl/7U8TlJLc1usEi6fII+/5xfd3ooGcYX3s/MMbYkBshzLvOlwMakKy//RDs9qewY=\ntrusted comment: OhMyUpdater policy fixture\nS2q7Ofq69Db47vMgD5y3PPzpK1TYpR++aggO55vqMtYh158nBvirM+8S+pV9pPGDUarw5Avh4JP0rHlWCNuKDw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "invalid-manifest"
+      }
+    },
+    {
+      "name": "component-mismatch",
+      "description": "A valid manifest of another component replayed to this client.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"other-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDhNnnbJR+XDlb+Rd9236sYDNvHx/N5LzYd1V75VcvruDiApgHN8x5rlQsmtl2FgWlGDKOPmLPMO6RrJsHH2kvAM=\ntrusted comment: OhMyUpdater policy fixture\n8yzGyXlxQvW2RWUNPil6mLSEGdOr+1ouw97N+5LkPKszpUJcsw2+VX6UQgBWq/SbYoNYD6jqp5tgytM2jh4QAQ==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "component-mismatch"
+      }
+    },
+    {
+      "name": "invalid-validity-period",
+      "description": "expiresAt is before publishedAt.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2026-10-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDiIqHpOHA6EaZ/oOdR8N0co6akrvyiq5IHzpw+ylBIlGTWm8hEbaKGTHl8RWv74VTzezMl24w6DBv/rF2zvJFgc=\ntrusted comment: OhMyUpdater policy fixture\n8lpTlv0CWK9YlTdeFICzQyMSMbNfiMI+oes4ruQ2TOBgWWEpLSrH7r04Nd+32twRJl4V7Kc4JIMayvBkqykmAw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "invalid-validity-period"
+      }
+    },
+    {
+      "name": "expired",
+      "description": "The manifest expired before the current time (freeze attack).",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2027-06-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "expired"
+      }
+    },
+    {
+      "name": "expires-exactly-now",
+      "description": "A manifest whose expiresAt equals the current time is expired.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2027-05-01T10:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "expired"
+      }
+    },
+    {
+      "name": "rollback",
+      "description": "The manifest is older than a version the client already accepted.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "highestAcceptedVersion": "1.1.0",
+      "expected": {
+        "valid": false,
+        "error": "rollback"
+      }
+    },
+    {
+      "name": "prerelease-is-lower",
+      "description": "1.0.0 is not a rollback after 1.0.0-rc.1.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  }\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDkB08i7douFFqH5qZJYEvW5HvR1wn2yQ4SSq+kgDgTimokKAssubN+Mu6bz+rs4ovjACB1/yInYaayTvfCGm+wo=\ntrusted comment: OhMyUpdater policy fixture\nvfLPJCexkDQNbhOK9o30eWlpyj61g4VJKHNt9gNLMh70muojVZbS7jOk2XV3xTrHndYqIjtKt52S16//0Pn1Bw==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "highestAcceptedVersion": "1.0.0-rc.1",
+      "expected": {
+        "valid": true,
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "invalid-minimum-version",
+      "description": "minimumVersion is greater than version.",
+      "manifest": "{\n  \"schemaVersion\": 1,\n  \"component\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"publishedAt\": \"2026-11-01T10:00:00Z\",\n  \"expiresAt\": \"2027-05-01T10:00:00Z\",\n  \"platforms\": {\n    \"web\": {\n      \"action\": \"reload\"\n    }\n  },\n  \"minimumVersion\": \"2.0.0\"\n}\n",
+      "signature": "untrusted comment: signature from minisign secret key\nRUTJPMXWlnAnDv6RD4kvfqYepG3+RqxOpx7PdBBzZuR/PdPtK7Rz3fyERSK3Vn+YnD/sSgZjf3BC6PbihRzV0mzieCd1o1ubKgU=\ntrusted comment: OhMyUpdater policy fixture\ndC+FEpaLl+jjH2wmA6nZZC/dr+vdGYuraXD60TAZMSeW5tyw+JDwrAvowCKmcOxOsCE4A+IA+EHszwXx/fCqDg==\n",
+      "trustedKeys": [
+        "untrusted comment: minisign public key 0E277096D6C53CC9\nRWTJPMXWlnAnDpXLleMR9VlLt8Td2m6gP1LNn8SvyIm8QKJMniEroLzr\n"
+      ],
+      "component": "example-app",
+      "now": "2026-12-01T00:00:00Z",
+      "expected": {
+        "valid": false,
+        "error": "invalid-minimum-version"
+      }
+    }
+  ],
+  "status": [
+    {
+      "name": "up-to-date",
+      "description": "The running version equals the latest version.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        }
+      },
+      "currentVersion": "2.3.0",
+      "platform": "web",
+      "expected": {
+        "status": "up-to-date"
+      }
+    },
+    {
+      "name": "newer-than-latest",
+      "description": "A running version newer than the manifest is up to date.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        }
+      },
+      "currentVersion": "2.4.0",
+      "platform": "web",
+      "expected": {
+        "status": "up-to-date"
+      }
+    },
+    {
+      "name": "available",
+      "description": "A newer version is available.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        }
+      },
+      "currentVersion": "2.2.0",
+      "platform": "web",
+      "expected": {
+        "status": "available"
+      }
+    },
+    {
+      "name": "prerelease-to-release",
+      "description": "A prerelease is older than the release with the same core version.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        }
+      },
+      "currentVersion": "2.3.0-rc.1",
+      "platform": "web",
+      "expected": {
+        "status": "available"
+      }
+    },
+    {
+      "name": "required",
+      "description": "The running version is older than minimumVersion.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        },
+        "minimumVersion": "2.0.0"
+      },
+      "currentVersion": "1.9.0",
+      "platform": "web",
+      "expected": {
+        "status": "required"
+      }
+    },
+    {
+      "name": "minimum-version-met",
+      "description": "The running version equals minimumVersion: the update is optional.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        },
+        "minimumVersion": "2.0.0"
+      },
+      "currentVersion": "2.0.0",
+      "platform": "web",
+      "expected": {
+        "status": "available"
+      }
+    },
+    {
+      "name": "blocked",
+      "description": "A known component does not satisfy a requirement.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        },
+        "requires": [
+          {
+            "component": "example-api",
+            "range": ">=2.1.0 <3.0.0"
+          }
+        ]
+      },
+      "currentVersion": "2.2.0",
+      "platform": "web",
+      "installed": {
+        "example-api": "2.0.0"
+      },
+      "expected": {
+        "status": "blocked",
+        "unmet": ["example-api"]
+      }
+    },
+    {
+      "name": "requirement-met",
+      "description": "Requirements are satisfied.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        },
+        "requires": [
+          {
+            "component": "example-api",
+            "range": ">=2.1.0 <3.0.0"
+          }
+        ]
+      },
+      "currentVersion": "2.2.0",
+      "platform": "web",
+      "installed": {
+        "example-api": "2.5.0"
+      },
+      "expected": {
+        "status": "available"
+      }
+    },
+    {
+      "name": "requirement-unknown",
+      "description": "Requirements on components whose version is unknown are not evaluated.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        },
+        "requires": [
+          {
+            "component": "example-api",
+            "range": ">=2.1.0 <3.0.0"
+          }
+        ]
+      },
+      "currentVersion": "2.2.0",
+      "platform": "web",
+      "expected": {
+        "status": "available"
+      }
+    },
+    {
+      "name": "blocked-takes-precedence",
+      "description": "blocked is reported even if the update would be required.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        },
+        "minimumVersion": "2.0.0",
+        "requires": [
+          {
+            "component": "example-api",
+            "range": ">=2.1.0 <3.0.0"
+          }
+        ]
+      },
+      "currentVersion": "1.9.0",
+      "platform": "web",
+      "installed": {
+        "example-api": "2.0.0"
+      },
+      "expected": {
+        "status": "blocked",
+        "unmet": ["example-api"]
+      }
+    },
+    {
+      "name": "unsupported-platform",
+      "description": "The manifest has no entry for the current platform.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        }
+      },
+      "currentVersion": "2.2.0",
+      "platform": "android",
+      "expected": {
+        "status": "error",
+        "error": "unsupported-platform"
+      }
+    },
+    {
+      "name": "unsupported-platform-when-up-to-date",
+      "description": "A missing platform entry is an error even when the running version is the latest.",
+      "manifest": {
+        "schemaVersion": 1,
+        "component": "example-web",
+        "version": "2.3.0",
+        "publishedAt": "2026-11-01T10:00:00Z",
+        "expiresAt": "2027-05-01T10:00:00Z",
+        "platforms": {
+          "web": {
+            "action": "reload"
+          }
+        }
+      },
+      "currentVersion": "2.3.0",
+      "platform": "android",
+      "expected": {
+        "status": "error",
+        "error": "unsupported-platform"
+      }
+    }
+  ]
+}

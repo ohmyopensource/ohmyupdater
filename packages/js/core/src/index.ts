@@ -30,3 +30,15 @@ export {
   type Requirement,
   type StoreEntry,
 } from './manifest.js';
+
+export {
+  computeStatus,
+  MAX_MANIFEST_SIZE,
+  VerificationError,
+  verifyManifest,
+  type StatusInput,
+  type UpdateStatus,
+  type VerificationErrorCode,
+  type VerifiedManifest,
+  type VerifyManifestInput,
+} from './verify.js';
