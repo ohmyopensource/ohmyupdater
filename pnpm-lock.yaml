@@ -44,6 +44,9 @@ importers:
 
   cli:
     dependencies:
+      '@noble/hashes':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@ohmyopensource/ohmyupdater-core':
         specifier: workspace:*
         version: link:../packages/js/core
