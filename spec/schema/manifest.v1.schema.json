@@ -50,10 +50,10 @@
       "pattern": "^https://"
     },
     "range": {
-      "description": "One or more space-separated comparators. Only >=, >, <=, <, = are allowed.",
+      "description": "One or more space-separated comparators. Only >=, >, <=, <, = are allowed. Bounds may have a prerelease but no build metadata.",
       "type": "string",
       "maxLength": 128,
-      "pattern": "^(?:>=|<=|>|<|=)(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?: (?:>=|<=|>|<|=)(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?)*$"
+      "pattern": "^(?:>=|<=|>|<|=)(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(?: (?:>=|<=|>|<|=)(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?)*$"
     },
     "requirement": {
       "type": "object",

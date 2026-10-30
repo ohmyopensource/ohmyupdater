@@ -14,3 +14,19 @@ export {
   type PublicKey,
   type VerifiedSignature,
 } from './minisign.js';
+
+export { compareVersions, parseVersion, satisfies, type Version } from './semver.js';
+
+export {
+  ManifestError,
+  PLATFORM_IDS,
+  validateManifest,
+  type InstallEntry,
+  type Manifest,
+  type NotifyEntry,
+  type PlatformEntry,
+  type PlatformId,
+  type ReloadEntry,
+  type Requirement,
+  type StoreEntry,
+} from './manifest.js';

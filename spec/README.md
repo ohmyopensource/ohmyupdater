@@ -9,6 +9,7 @@ This folder contains the **normative contract** shared by every OhMyUpdater! imp
 | `fixtures/valid/`                | Manifests that MUST pass schema validation                    |
 | `fixtures/invalid/`              | Manifests that MUST fail schema validation                    |
 | `fixtures/signatures/cases.json` | Signature verification test vectors                           |
+| `fixtures/versions/cases.json`   | Version comparison and range test vectors                     |
 | `scripts/validate-fixtures.mjs`  | Checks every fixture against the schema                       |
 
 Run the fixture check from the repository root:

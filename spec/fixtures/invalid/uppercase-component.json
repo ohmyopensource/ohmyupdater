@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "component": "Example-App",
+  "version": "1.0.0",
+  "publishedAt": "2026-11-01T10:00:00Z",
+  "expiresAt": "2027-05-01T10:00:00Z",
+  "platforms": {
+    "web": {
+      "action": "reload"
+    }
+  }
+}

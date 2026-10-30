@@ -72,6 +72,8 @@ Each item of `requires` has a `component` and a `range`. A range is one or more 
 
 Only the operators `>=`, `>`, `<=`, `<` and `=` are allowed. Shorthand syntaxes such as `^`, `~`, `x` or `*` are deliberately not supported, so that every implementation evaluates ranges identically.
 
+Bounds MAY include a prerelease (`>=2.1.0-rc.1`) but MUST NOT include build metadata. Shared test vectors are in `fixtures/versions/cases.json`.
+
 ### 3.3 Version comparison
 
 Versions are compared using Semantic Versioning 2.0.0 precedence. Build metadata (`+...`) MUST be ignored when comparing.
