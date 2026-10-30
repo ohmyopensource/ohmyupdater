@@ -1,13 +1,24 @@
 {
   "name": "@ohmyopensource/ohmyupdater-cli",
-  "version": "0.0.0",
-  "private": true,
-  "description": "OhMyUpdater! CLI: generate keys, create and sign update manifests.",
+  "version": "0.1.0",
+  "description": "OhMyUpdater! CLI: generate keys, create, sign and verify update manifests.",
+  "keywords": [
+    "update",
+    "updater",
+    "cli",
+    "minisign",
+    "signing",
+    "release"
+  ],
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ohmyopensource/ohmyupdater.git",
     "directory": "cli"
+  },
+  "homepage": "https://github.com/ohmyopensource/ohmyupdater#readme",
+  "bugs": {
+    "url": "https://github.com/ohmyopensource/ohmyupdater/issues"
   },
   "type": "module",
   "bin": {
@@ -24,5 +35,12 @@
   "dependencies": {
     "@noble/hashes": "^2.4.0",
     "@ohmyopensource/ohmyupdater-core": "workspace:*"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

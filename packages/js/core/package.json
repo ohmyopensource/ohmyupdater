@@ -1,13 +1,25 @@
 {
   "name": "@ohmyopensource/ohmyupdater-core",
-  "version": "0.0.0",
-  "private": true,
-  "description": "OhMyUpdater! core: manifest validation, signature verification and update status.",
+  "version": "0.1.0",
+  "description": "OhMyUpdater! core: manifest validation, minisign signature verification and update status.",
+  "keywords": [
+    "update",
+    "updater",
+    "auto-update",
+    "minisign",
+    "ed25519",
+    "signature",
+    "semver"
+  ],
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ohmyopensource/ohmyupdater.git",
     "directory": "packages/js/core"
+  },
+  "homepage": "https://github.com/ohmyopensource/ohmyupdater#readme",
+  "bugs": {
+    "url": "https://github.com/ohmyopensource/ohmyupdater/issues"
   },
   "type": "module",
   "sideEffects": false,
@@ -28,5 +40,9 @@
   "dependencies": {
     "@noble/curves": "^2.4.0",
     "@noble/hashes": "^2.4.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

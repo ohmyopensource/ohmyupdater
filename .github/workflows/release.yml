@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+# Least privilege by default; only the staging job can request an OIDC token.
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  stage:
+    name: Stage packages on npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Only tags matching v* can use this environment (see repository settings).
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check that the tag points to a commit on main
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::The tag $GITHUB_REF_NAME does not point to a commit on main."
+            exit 1
+          fi
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install an npm version with staged publishing
+        run: npm install -g npm@12
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check that package versions match the tag
+        run: node scripts/check-release-version.mjs "$GITHUB_REF_NAME"
+
+      - name: Verify
+        run: |
+          pnpm format:check
+          pnpm lint:root
+          pnpm spec:validate
+          pnpm typecheck
+          pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Pack
+        run: |
+          for dir in packages/js/core packages/js/web cli; do cp LICENSE "$dir/LICENSE"; done
+          pnpm -r --filter "./packages/js/*" --filter ./cli pack --pack-destination "$RUNNER_TEMP/packages"
+          ls -l "$RUNNER_TEMP/packages"
+
+      - name: Stage on npm (approval with 2FA required)
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          tag_args=()
+          # Prereleases must not become the "latest" version.
+          if [[ "$version" == *-* ]]; then tag_args=(--tag next); fi
+          for name in core web cli; do
+            npm stage publish "$RUNNER_TEMP/packages/ohmyopensource-ohmyupdater-$name-$version.tgz" \
+              --access public --provenance "${tag_args[@]}"
+          done
+
+      - name: Summary
+        run: |
+          {
+            echo "## Packages staged for $GITHUB_REF_NAME"
+            echo
+            echo "Nothing is public yet. Review and approve each package with 2FA:"
+            echo
+            echo '- npmjs.com: **Staged Packages** tab'
+            echo '- or: `npm stage list @ohmyopensource/ohmyupdater-core`, then `npm stage approve <stage-id>`'
+            echo
+            echo 'Approve `core` first: `web` and `cli` depend on it.'
+          } >> "$GITHUB_STEP_SUMMARY"

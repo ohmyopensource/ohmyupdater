@@ -1,13 +1,25 @@
 {
   "name": "@ohmyopensource/ohmyupdater-web",
-  "version": "0.0.0",
-  "private": true,
-  "description": "OhMyUpdater! adapter for web applications: update notifications in the browser.",
+  "version": "0.1.0",
+  "description": "OhMyUpdater! adapter for web applications: signed update notifications in the browser.",
+  "keywords": [
+    "update",
+    "updater",
+    "update-notification",
+    "browser",
+    "angular",
+    "react",
+    "minisign"
+  ],
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ohmyopensource/ohmyupdater.git",
     "directory": "packages/js/web"
+  },
+  "homepage": "https://github.com/ohmyopensource/ohmyupdater#readme",
+  "bugs": {
+    "url": "https://github.com/ohmyopensource/ohmyupdater/issues"
   },
   "type": "module",
   "sideEffects": false,
@@ -27,5 +39,9 @@
   },
   "dependencies": {
     "@ohmyopensource/ohmyupdater-core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
