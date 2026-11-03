@@ -2,6 +2,12 @@
 
 All notable changes to the OhMyUpdater! packages are documented here. The packages share one version number. This project follows [Semantic Versioning](https://semver.org); before `1.0.0`, minor versions may contain breaking changes.
 
+## Unreleased
+
+### Added
+
+- **action:** GitHub Action that creates, signs and verifies a manifest in a release workflow.
+
 ## 0.2.0
 
 ### Breaking changes

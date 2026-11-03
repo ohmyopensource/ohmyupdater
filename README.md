@@ -62,6 +62,8 @@ Then delete `release.key` from your machine, or keep it in a password manager.
 
 ### 3. Create, sign and verify the manifest at every release
 
+On GitHub Actions, the [OhMyUpdater! action](action/README.md) does all three steps in one. The commands below do the same on any CI.
+
 In your release workflow, after the build:
 
 ```yaml
@@ -157,7 +159,7 @@ The full rules are in the [specification](spec/manifest.md). Every implementatio
 | `@ohmyopensource/ohmyupdater-core` | Any JavaScript runtime | `0.2.0` |
 | `@ohmyopensource/ohmyupdater-web`  | Browsers               | `0.2.0` |
 | `@ohmyopensource/ohmyupdater-cli`  | Node.js (publishers)   | `0.2.0` |
-| Reusable GitHub Action             | GitHub Actions         | Planned |
+| [GitHub Action](action/README.md)  | GitHub Actions         | New     |
 | Tauri adapter                      | Desktop                | Planned |
 | Node.js adapter                    | Backends and CLIs      | Planned |
 | Dart package                       | Flutter                | Planned |
@@ -175,6 +177,7 @@ OhMyUpdater! is in early development. Until `1.0.0`, the specification and the A
 | `packages/js/core/`  | Core: verification, validation, update status, download client  |
 | `packages/js/web/`   | Browser adapter                                                 |
 | `cli/`               | Command-line tool for publishers                                |
+| `action/`            | GitHub Action: create, sign and verify a manifest               |
 | `scripts/`           | Release and interoperability scripts                            |
 | `.github/workflows/` | CI and the release workflow                                     |
 

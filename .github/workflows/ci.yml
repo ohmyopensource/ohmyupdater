@@ -84,3 +84,115 @@ jobs:
         env:
           CLI: ${{ github.workspace }}/cli/dist/cli.js
         run: bash "${{ github.workspace }}/scripts/minisign-interop.sh"
+
+  action:
+    name: GitHub Action
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Prepare throwaway keys and a test artifact
+        run: |
+          node cli/dist/cli.js keygen --out "$RUNNER_TEMP/test" --unencrypted
+          node cli/dist/cli.js keygen --out "$RUNNER_TEMP/other" --unencrypted
+          echo 'pretend installer' > "$RUNNER_TEMP/app-setup.exe"
+          {
+            echo 'OHMYUPDATER_SECRET_KEY<<EOF'
+            cat "$RUNNER_TEMP/test.key"
+            echo 'EOF'
+            echo 'TEST_PUBLIC_KEY<<EOF'
+            cat "$RUNNER_TEMP/test.pub"
+            echo 'EOF'
+            echo 'OTHER_PUBLIC_KEY<<EOF'
+            cat "$RUNNER_TEMP/other.pub"
+            echo 'EOF'
+          } >> "$GITHUB_ENV"
+
+      - name: Run the action
+        id: manifest
+        uses: ./action
+        env:
+          # Tests the action with this commit's CLI instead of the published one.
+          OHMYUPDATER_ACTION_CLI: cli/dist/cli.js
+        with:
+          component: ci-app
+          version: v1.2.3
+          public-key: ${{ env.TEST_PUBLIC_KEY }}
+          install: windows-x86_64=${{ runner.temp }}/app-setup.exe
+          base-url: https://example.com/releases/v1.2.3/
+          notify: |
+            server
+            # Comments and empty lines are ignored.
+
+            linux-x86_64=https://example.com/releases/tag/v1.2.3
+          reload: 'true'
+          minimum-version: 1.0.0
+
+      - name: Check the signed manifest
+        env:
+          MANIFEST: ${{ steps.manifest.outputs.manifest }}
+          SIGNATURE: ${{ steps.manifest.outputs.signature }}
+        run: |
+          node cli/dist/cli.js verify "$MANIFEST" --signature "$SIGNATURE" \
+            --public-key "$RUNNER_TEMP/test.pub" --component ci-app \
+            --check-file "windows-x86_64=$RUNNER_TEMP/app-setup.exe"
+          node -e '
+            const m = JSON.parse(require("fs").readFileSync(process.env.MANIFEST, "utf8"));
+            const platforms = Object.keys(m.platforms).sort().join(",");
+            if (m.version !== "1.2.3" || platforms !== "linux-x86_64,server,web,windows-x86_64") {
+              console.error("Unexpected manifest: " + m.version + " " + platforms);
+              process.exit(1);
+            }'
+
+      - name: Find the latest CLI published on npm
+        id: published
+        run: echo "version=$(npm view @ohmyopensource/ohmyupdater-cli version)" >> "$GITHUB_OUTPUT"
+
+      - name: Run the action with the published CLI
+        uses: ./action
+        with:
+          component: ci-app
+          version: 1.2.3
+          public-key: ${{ env.TEST_PUBLIC_KEY }}
+          notify: web
+          output-dir: ${{ runner.temp }}/published
+          cli-version: ${{ steps.published.outputs.version }}
+
+      - name: Run the action with a public key that does not match
+        id: wrong-key
+        continue-on-error: true
+        uses: ./action
+        env:
+          OHMYUPDATER_ACTION_CLI: cli/dist/cli.js
+        with:
+          component: ci-app
+          version: 1.2.3
+          public-key: ${{ env.OTHER_PUBLIC_KEY }}
+          notify: web
+          output-dir: ${{ runner.temp }}/wrong-key
+
+      - name: Check that the mismatch was rejected
+        env:
+          OUTCOME: ${{ steps.wrong-key.outcome }}
+        run: |
+          test "$OUTCOME" = failure
+          test ! -e "$RUNNER_TEMP/wrong-key/latest.json"

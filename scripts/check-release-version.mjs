@@ -2,7 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-// Fails unless every published package has the version of the release tag.
+// Fails unless every published package, and the CLI version used by the
+// action, has the version of the release tag.
 // Usage: node scripts/check-release-version.mjs v0.1.0
 
 import { readFileSync } from 'node:fs';
@@ -32,6 +33,16 @@ for (const dir of PACKAGES) {
   } else {
     console.log(`${name}@${version}`);
   }
+}
+
+// The action installs the CLI released together with it.
+const action = readFileSync('action/action.yml', 'utf8');
+const cliVersion = /cli-version:[\s\S]*?default: '([^']*)'/.exec(action)?.[1];
+if (cliVersion !== expected) {
+  console.error(`action: default cli-version ${cliVersion}, expected ${expected}.`);
+  failed = true;
+} else {
+  console.log(`action: cli-version ${cliVersion}`);
 }
 
 if (failed) process.exit(1);

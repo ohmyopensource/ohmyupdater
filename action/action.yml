@@ -1,0 +1,97 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: OhMyUpdater! manifest
+description: Create, sign and verify an OhMyUpdater! update manifest. Publishing is up to you.
+author: OhMyOpenSource!
+
+branding:
+  icon: bell
+  color: purple
+
+inputs:
+  component:
+    description: Component ID, for example my-app.
+    required: true
+  version:
+    description: Released version. A leading "v" is removed, so github.ref_name works.
+    required: true
+  public-key:
+    description: Content of the public key file (.pub). The signed manifest is verified against it.
+    required: true
+  notify:
+    description: One per line. <platform> or <platform>=<https-url>, for example web=https://…/releases/tag/v1.2.0.
+    required: false
+    default: ''
+  install:
+    description: One per line. <platform>=<file>; size and sha256 are computed from the file.
+    required: false
+    default: ''
+  base-url:
+    description: HTTPS URL the install files are downloaded from (required with install).
+    required: false
+    default: ''
+  store:
+    description: One per line. <platform>=<https-url> of the store page.
+    required: false
+    default: ''
+  reload:
+    description: '"true" for a web application served by you (platform web, action reload).'
+    required: false
+    default: 'false'
+  minimum-version:
+    description: Versions below this one are told the update is required.
+    required: false
+    default: ''
+  requires:
+    description: One per line. "<component> <range>", for example "my-api >=2.0.0".
+    required: false
+    default: ''
+  notes-file:
+    description: Path to release notes in Markdown.
+    required: false
+    default: ''
+  expires-in:
+    description: Days until the manifest expires (1-365, CLI default 180).
+    required: false
+    default: ''
+  output-dir:
+    description: Directory for latest.json and latest.json.sig (default $RUNNER_TEMP/ohmyupdater).
+    required: false
+    default: ''
+  cli-version:
+    description: Exact version of @ohmyopensource/ohmyupdater-cli to use.
+    required: false
+    default: '0.2.0'
+
+outputs:
+  manifest:
+    description: Path of the signed latest.json.
+    value: ${{ steps.run.outputs.manifest }}
+  signature:
+    description: Path of latest.json.sig.
+    value: ${{ steps.run.outputs.signature }}
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      # Inputs are passed as environment variables, never interpolated into the script.
+      env:
+        INPUT_COMPONENT: ${{ inputs.component }}
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_PUBLIC_KEY: ${{ inputs.public-key }}
+        INPUT_NOTIFY: ${{ inputs.notify }}
+        INPUT_INSTALL: ${{ inputs.install }}
+        INPUT_BASE_URL: ${{ inputs.base-url }}
+        INPUT_STORE: ${{ inputs.store }}
+        INPUT_RELOAD: ${{ inputs.reload }}
+        INPUT_MINIMUM_VERSION: ${{ inputs.minimum-version }}
+        INPUT_REQUIRES: ${{ inputs.requires }}
+        INPUT_NOTES_FILE: ${{ inputs.notes-file }}
+        INPUT_EXPIRES_IN: ${{ inputs.expires-in }}
+        INPUT_OUTPUT_DIR: ${{ inputs.output-dir }}
+        INPUT_CLI_VERSION: ${{ inputs.cli-version }}
+      run: bash "$GITHUB_ACTION_PATH/run.sh"
